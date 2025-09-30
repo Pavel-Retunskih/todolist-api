@@ -4,8 +4,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { TodolistModule } from './todolist/todolist.module';
-import { TaskModule } from './task/task.module';
 import { UsersModule } from './modules/users/users.module';
 import {
   appConfig,
@@ -43,8 +41,6 @@ import {
     }),
 
     AuthModule,
-    TodolistModule,
-    TaskModule,
     UsersModule,
   ],
   controllers: [AppController],
