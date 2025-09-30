@@ -17,16 +17,13 @@ export class PasswordUtil {
    * @param plainTextPassword - пароль в открытом виде
    * @returns Promise с хешированным паролем
    */
-  static async hashPassword(plainTextPassword: string): Promise<string> {
+  static async hashPassword(plainTextPassword: string): Promise<string | void> {
     try {
       // bcrypt.hash автоматически генерирует salt и хеширует пароль
-      const hashedPassword = await bcrypt.hash(
-        plainTextPassword,
-        this.SALT_ROUNDS,
-      );
-      return hashedPassword;
+      return await bcrypt.hash(plainTextPassword, this.SALT_ROUNDS);
     } catch (error) {
-      throw new Error(`Failed to hash password: ${error.message}`);
+      if (error instanceof Error)
+        throw new Error(`Failed to hash password: ${error.message}`);
     }
   }
 
@@ -39,13 +36,13 @@ export class PasswordUtil {
   static async verifyPassword(
     plainTextPassword: string,
     hashedPassword: string,
-  ): Promise<boolean> {
+  ): Promise<boolean | void> {
     try {
       // bcrypt.compare автоматически извлекает salt из хеша и сравнивает
-      const isMatch = await bcrypt.compare(plainTextPassword, hashedPassword);
-      return isMatch;
+      return await bcrypt.compare(plainTextPassword, hashedPassword);
     } catch (error) {
-      throw new Error(`Failed to verify password: ${error.message}`);
+      if (error instanceof Error)
+        throw new Error(`Failed to verify password: ${error.message}`);
     }
   }
 

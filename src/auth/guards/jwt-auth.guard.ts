@@ -1,4 +1,8 @@
-import { Injectable, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
@@ -31,7 +35,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     // Проверяем, является ли маршрут публичным
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(), // метод контроллера
-      context.getClass(),   // класс контроллера
+      context.getClass(), // класс контроллера
     ]);
 
     // Если маршрут публичный, разрешаем доступ без аутентификации
@@ -60,15 +64,15 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       if (info?.name === 'TokenExpiredError') {
         throw new UnauthorizedException('Token has expired');
       }
-      
+
       if (info?.name === 'JsonWebTokenError') {
         throw new UnauthorizedException('Invalid token');
       }
-      
+
       if (info?.name === 'NotBeforeError') {
         throw new UnauthorizedException('Token not active yet');
       }
-      
+
       // Общая ошибка
       throw err || new UnauthorizedException('Authentication failed');
     }

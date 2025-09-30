@@ -31,6 +31,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     @InjectModel(UserSchema.name)
     private readonly userModel: Model<UserDocument>,
   ) {
+    const jwtSecret: string | undefined = configService.get('jwt');
+    if (!jwtSecret) {
+      throw new Error('JWT secret not found in environment variables');
+    }
     super({
       // Извлекаем JWT токен из Authorization заголовка как Bearer token
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -39,7 +43,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       ignoreExpiration: false,
 
       // Секрет для верификации токена
-      secretOrKey: configService.get<string>('jwt.secret'),
+      secretOrKey: jwtSecret,
 
       // Дополнительные опции
       jsonWebTokenOptions: {
