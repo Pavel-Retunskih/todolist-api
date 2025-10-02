@@ -29,8 +29,8 @@ export const databaseConfig = registerAs('database', () => {
 export const jwtConfig = registerAs('jwt', () => {
   const config = validateConfig(process.env);
   return {
-    secret: config.JWT_SECRET,
-    expirationTime: config.JWT_EXPIRATION,
+    accessSecret: config.JWT_ACCESS_SECRET,
+    accessExpirationTime: config.JWT_ACCESS_EXPIRATION,
     refreshSecret: config.JWT_REFRESH_SECRET,
     refreshExpirationTime: config.JWT_REFRESH_EXPIRATION,
   };
