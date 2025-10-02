@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res } from '@nestjs/common';
+import { type Response } from 'express';
 import { AuthService } from './auth.service';
 import { type UserDTO } from '../modules/users/DTO/user.dto';
 import { Public } from './decorators/auth.decorators';
@@ -17,7 +18,22 @@ export class AuthController {
 
   @Public()
   @Post('register')
-  async register(@Body() userDto: UserDTO) {
-    return this.authService.register(userDto);
+  async register(
+    @Body() userDto: UserDTO,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const user = await this.authService.register(userDto);
+    response.cookie('refreshToken', user.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      path: 'api/v1/auth',
+    });
+    return {
+      accessToken: user.accessToken,
+      id: user.id,
+      email: user.email,
+    };
   }
 }
