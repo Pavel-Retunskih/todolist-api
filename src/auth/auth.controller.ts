@@ -1,8 +1,12 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { type UserDTO } from '../modules/users/DTO/user.dto';
+import { Public } from './decorators/auth.decorators';
 
 @Controller('auth')
 export class AuthController {
-  // Временный endpoint для тестирования конфигурации
+  constructor(private readonly authService: AuthService) {}
+
   @Get('health')
   getHealth(): { status: string; message: string } {
     return {
@@ -11,11 +15,9 @@ export class AuthController {
     };
   }
 
-  // TODO: Реализовать все auth endpoints согласно требованиям:
-  // - POST /register
-  // - POST /login
-  // - POST /logout
-  // - POST /refresh
-  // - POST /password/forgot
-  // - POST /password/reset
+  @Public()
+  @Post('register')
+  async register(@Body() userDto: UserDTO) {
+    return this.authService.register(userDto);
+  }
 }
