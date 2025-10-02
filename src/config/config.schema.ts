@@ -16,10 +16,10 @@ export const configSchema = z.object({
   DATABASE_NAME: z.string().min(1, 'DATABASE_NAME is required'),
 
   // JWT Configuration
-  JWT_SECRET: z
+  JWT_ACCESS_SECRET: z
     .string()
-    .min(32, 'JWT_SECRET must be at least 32 characters long'),
-  JWT_EXPIRATION: z.string().default('15m'),
+    .min(32, 'JWT_ACCESS_SECRET must be at least 32 characters long'),
+  JWT_ACCESS_EXPIRATION: z.string().default('15m'),
   JWT_REFRESH_SECRET: z
     .string()
     .min(32, 'JWT_REFRESH_SECRET must be at least 32 characters long'),
