@@ -14,7 +14,13 @@ export class User {
   /**
    * Фабричный метод для создания нового пользователя
    */
-  static create(email: string, passwordHash: string): Omit<User, 'id'> {
+  static create({
+    email,
+    passwordHash,
+  }: {
+    email: string;
+    passwordHash: string;
+  }): Omit<User, 'id'> {
     const now = new Date();
     return {
       email,

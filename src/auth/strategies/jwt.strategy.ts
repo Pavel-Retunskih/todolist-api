@@ -59,7 +59,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
    * Вызывается автоматически после успешной верификации токена
    * Результат этой функции будет доступен в req.user
    */
-  async validate(payload: JwtPayload): Promise<any> {
+  async validate(payload: JwtPayload): Promise<Partial<UserDocument> | void> {
     const { sub: userId } = payload;
 
     // Проверяем, существует ли пользователь в БД

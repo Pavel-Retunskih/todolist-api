@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserDocument, UserSchema } from '../infrastructure/user.schema';
+import { PasswordUtil } from '../../../common/utils/password.util';
 
 @Controller('users')
 export class UsersController {
@@ -41,7 +42,7 @@ export class UsersController {
     try {
       const testUser = new this.userModel({
         email: body.email || 'test@example.com',
-        passwordHash: 'test-hash-12345',
+        passwordHash: await PasswordUtil.hashPassword('test-hash-12345'),
       });
 
       const savedUser = await testUser.save();
