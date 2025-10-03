@@ -1,8 +1,8 @@
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { UsersController } from './presentation/users.controller';
-import { UserSchema, UserSchemaFactory } from './infrastructure/user.schema';
-import { UserMongodbRepository } from './infrastructure/user-mongodb.repository';
+import { Module } from '@nestjs/common'
+import { MongooseModule } from '@nestjs/mongoose'
+import { UsersController } from './presentation/users.controller'
+import { UserSchema, UserSchemaFactory } from './infrastructure/user.schema'
+import { UserMongodbRepository } from './infrastructure/user-mongodb.repository'
 
 @Module({
   imports: [
@@ -20,6 +20,6 @@ import { UserMongodbRepository } from './infrastructure/user-mongodb.repository'
       useClass: UserMongodbRepository,
     },
   ],
-  exports: ['UserRepository', MongooseModule],
+  exports: ['UserRepository'],
 })
 export class UsersModule {}

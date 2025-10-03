@@ -1,23 +1,23 @@
-import { UserRepository } from '../domain/user.repository';
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { UserDocument, UserSchema } from './user.schema';
-import { User } from '../domain/user.entity';
+import { UserRepository } from '../domain/user.repository'
+import { Injectable } from '@nestjs/common'
+import { InjectModel } from '@nestjs/mongoose'
+import { Model } from 'mongoose'
+import { UserDocument, UserSchema } from './user.schema'
+import { User } from '../domain/user.entity'
 
 @Injectable()
 export class UserMongodbRepository implements UserRepository {
   constructor(
     @InjectModel(UserSchema.name)
-    private readonly userModel: Model<UserDocument>,
+    private readonly userDocumentModel: Model<UserDocument>,
   ) {}
 
   async createUser(user: Pick<User, 'email' | 'passwordHash'>): Promise<User> {
-    const newUser = new this.userModel({
+    const newUser = new this.userDocumentModel({
       email: user.email,
       passwordHash: user.passwordHash,
-    });
-    const createdUser = await newUser.save();
+    })
+    const createdUser = await newUser.save()
 
     return new User(
       createdUser._id.toString(),
@@ -25,18 +25,22 @@ export class UserMongodbRepository implements UserRepository {
       createdUser.passwordHash,
       createdUser.createdAt,
       createdUser.updatedAt,
-    );
+    )
   }
 
   async updateUser(id: string, updates: User): Promise<User> {
-    const { id: _, ...updateData } = updates;
-    const updatedUser = await this.userModel.findByIdAndUpdate(id, updateData, {
-      new: true,
-      runValidators: true,
-    });
+    const { id: _, ...updateData } = updates
+    const updatedUser = await this.userDocumentModel.findByIdAndUpdate(
+      id,
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      },
+    )
 
     if (!updatedUser) {
-      throw new Error(`User with ${id} not found`);
+      throw new Error(`User with ${id} not found`)
     }
 
     return new User(
@@ -45,47 +49,47 @@ export class UserMongodbRepository implements UserRepository {
       updatedUser.passwordHash,
       updatedUser.createdAt,
       updatedUser.updatedAt,
-    );
+    )
   }
 
   async deleteUser(id: string): Promise<void> {
-    await this.userModel.findByIdAndDelete(id);
+    await this.userDocumentModel.findByIdAndDelete(id)
   }
 
   async getUserById(id: string): Promise<User | null> {
-    const currentUser = await this.userModel.findById(id).exec();
-    if (!currentUser) return null;
+    const currentUser = await this.userDocumentModel.findById(id).exec()
+    if (!currentUser) return null
     return new User(
       currentUser._id.toString(),
       currentUser.email,
       currentUser.passwordHash,
       currentUser.createdAt,
       currentUser.updatedAt,
-    );
+    )
   }
 
   async getUserByEmail(email: string): Promise<User | null> {
-    const currentUser = await this.userModel.findOne({ email }).exec();
-    if (!currentUser) return null;
+    const currentUser = await this.userDocumentModel.findOne({ email }).exec()
+    if (!currentUser) return null
     return new User(
       currentUser._id.toString(),
       currentUser.email,
       currentUser.passwordHash,
       currentUser.createdAt,
       currentUser.updatedAt,
-    );
+    )
   }
 
   async findUserByEmailWithPassword(
     email: string,
     passwordHash: string,
   ): Promise<User | null> {
-    const currentUser = await this.userModel
+    const currentUser = await this.userDocumentModel
       .findOne({ email })
       .select('+passwordHash')
-      .exec();
+      .exec()
 
-    if (!currentUser) return null;
+    if (!currentUser) return null
 
     return new User(
       currentUser._id.toString(),
@@ -93,6 +97,6 @@ export class UserMongodbRepository implements UserRepository {
       currentUser.passwordHash,
       currentUser.createdAt,
       currentUser.updatedAt,
-    );
+    )
   }
 }

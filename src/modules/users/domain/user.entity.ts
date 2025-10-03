@@ -18,24 +18,24 @@ export class User {
     email,
     passwordHash,
   }: {
-    email: string;
-    passwordHash: string;
+    email: string
+    passwordHash: string
   }): Omit<User, 'id'> {
-    const now = new Date();
+    const now = new Date()
     return {
       email,
       passwordHash,
       createdAt: now,
       updatedAt: now,
-    } as Omit<User, 'id'>;
+    } as Omit<User, 'id'>
   }
 
   /**
    * Бизнес-правило: проверка валидности email
    */
   static isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
   }
 
   /**
@@ -48,7 +48,7 @@ export class User {
       updates.passwordHash ?? this.passwordHash,
       this.createdAt,
       new Date(), // updatedAt
-    );
+    )
   }
 
   /**
@@ -60,6 +60,6 @@ export class User {
       email: this.email,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
-    };
+    }
   }
 }

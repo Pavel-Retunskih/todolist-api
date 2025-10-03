@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { UserDocument, UserSchema } from '../infrastructure/user.schema';
-import { PasswordUtil } from '../../../common/utils/password.util';
+import { Body, Controller, Get, Post } from '@nestjs/common'
+import { InjectModel } from '@nestjs/mongoose'
+import { Model } from 'mongoose'
+import { UserDocument, UserSchema } from '../infrastructure/user.schema'
+import { PasswordUtil } from '../../../common/utils/password.util'
 
 @Controller('users')
 export class UsersController {
@@ -18,19 +18,19 @@ export class UsersController {
   async getHealth() {
     try {
       // Проверяем подключение к MongoDB
-      const count = await this.userModel.countDocuments();
+      const count = await this.userModel.countDocuments()
       return {
         status: 'ok',
         message: 'MongoDB connection is working',
         usersCount: count,
         database: 'todolist-api',
-      };
+      }
     } catch (error) {
       return {
         status: 'error',
         message: 'MongoDB connection failed',
         error: error instanceof Error ? error.message : String(error),
-      };
+      }
     }
   }
 
@@ -43,19 +43,19 @@ export class UsersController {
       const testUser = new this.userModel({
         email: body.email || 'test@example.com',
         passwordHash: await PasswordUtil.hashPassword('test-hash-12345'),
-      });
+      })
 
-      const savedUser = await testUser.save();
+      const savedUser = await testUser.save()
 
       return {
         message: 'Test user created successfully',
         user: savedUser.toJSON(), // passwordHash будет исключен благодаря toJSON transform
-      };
+      }
     } catch (error) {
       return {
         message: 'Failed to create test user',
         error: error instanceof Error ? error.message : String(error),
-      };
+      }
     }
   }
 
@@ -65,7 +65,7 @@ export class UsersController {
   @Get()
   async getAllUsers() {
     try {
-      const users = await this.userModel.find().lean(); // .lean() возвращает plain objects
+      const users = await this.userModel.find().lean() // .lean() возвращает plain objects
       return {
         message: 'Users retrieved successfully',
         count: users.length,
@@ -75,12 +75,12 @@ export class UsersController {
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
         })),
-      };
+      }
     } catch (error) {
       return {
         message: 'Failed to retrieve users',
         error: error instanceof Error ? error.message : String(error),
-      };
+      }
     }
   }
 }
