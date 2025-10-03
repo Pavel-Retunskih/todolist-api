@@ -7,7 +7,7 @@ import { HydratedDocument } from 'mongoose';
 export type UserDocument = HydratedDocument<UserSchema>;
 
 /**
- * Mongoose схема для пользователя
+ * Mongoose схема для пользователя.
  * Определяет структуру данных в MongoDB
  */
 @Schema({
@@ -72,10 +72,10 @@ UserSchemaFactory.virtual('id').get(function () {
   return this._id.toHexString();
 });
 
-// Настройка JSON сериализации
+// Настройка JSON сериализация
 UserSchemaFactory.set('toJSON', {
   virtuals: true,
-  transform: (_, ret: any) => {
+  transform: (_, ret: Partial<UserDocument>) => {
     delete ret._id;
     delete ret.passwordHash; // Никогда не возвращаем пароль в JSON
     return ret;

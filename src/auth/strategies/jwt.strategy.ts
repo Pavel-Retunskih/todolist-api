@@ -1,23 +1,19 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { PassportStrategy } from '@nestjs/passport';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import {
-  UserDocument,
-  UserSchema,
-} from '../../modules/users/infrastructure/user.schema';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { PassportStrategy } from '@nestjs/passport'
+import { ExtractJwt, Strategy } from 'passport-jwt'
+import type { UserRepository } from '../../modules/users/domain/user.repository'
+import { User } from '../../modules/users/domain/user.entity'
 
 /**
  * Payload JWT токена
  * Содержит только необходимые данные для идентификации пользователя
  */
 export interface JwtPayload {
-  sub: string; // subject - обычно ID пользователя (стандарт JWT)
-  email: string;
-  iat?: number; // issued at - время создания токена
-  exp?: number; // expiration time - время истечения токена
+  sub: string // subject - обычно ID пользователя (стандарт JWT)
+  email: string
+  iat?: number // issued at - время создания токена
+  exp?: number // expiration time - время истечения токена
 }
 
 /**
@@ -28,12 +24,12 @@ export interface JwtPayload {
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     private readonly configService: ConfigService,
-    @InjectModel(UserSchema.name)
-    private readonly userModel: Model<UserDocument>,
+    @Inject('UserRepository')
+    private readonly userRepository: UserRepository,
   ) {
-    const jwtSecret: string | undefined = configService.get('jwt');
+    const jwtSecret: string | undefined = configService.get('jwt')
     if (!jwtSecret) {
-      throw new Error('JWT secret not found in environment variables');
+      throw new Error('JWT secret not found in environment variables')
     }
     super({
       // Извлекаем JWT токен из Authorization заголовка как Bearer token
@@ -51,7 +47,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         // audience: 'todolist-app',
         // issuer: 'todolist-api',
       },
-    });
+    })
   }
 
   /**
@@ -59,33 +55,24 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
    * Вызывается автоматически после успешной верификации токена
    * Результат этой функции будет доступен в req.user
    */
-  async validate(payload: JwtPayload): Promise<any> {
-    const { sub: userId } = payload;
+  async validate(payload: JwtPayload): Promise<Partial<User> | void> {
+    const { sub: userId } = payload
 
     // Проверяем, существует ли пользователь в БД
-    const user = await this.userModel.findById(userId).exec();
+    const user = await this.userRepository.getUserById(userId)
 
     if (!user) {
       // Токен валидный, но пользователь не найден (например, был удален)
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException('User not found')
     }
 
     // Возвращаем пользователя без пароля
     // Это значение будет доступно как req.user в контроллерах
     return {
-      id: user._id.toString(),
+      id: user.id,
       email: user.email,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
-    };
+    }
   }
-
-  /**
-   * Дополнительная проверка токена (опционально)
-   * Можно переопределить для кастомной логики валидации
-   */
-  // authenticate(req: any, options?: any) {
-  //   // Кастомная логика аутентификации
-  //   return super.authenticate(req, options);
-  // }
 }

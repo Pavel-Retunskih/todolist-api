@@ -17,13 +17,14 @@ export class PasswordUtil {
    * @param plainTextPassword - пароль в открытом виде
    * @returns Promise с хешированным паролем
    */
-  static async hashPassword(plainTextPassword: string): Promise<string | void> {
+  static async hashPassword(plainTextPassword: string): Promise<string> {
     try {
       // bcrypt.hash автоматически генерирует salt и хеширует пароль
       return await bcrypt.hash(plainTextPassword, this.SALT_ROUNDS);
     } catch (error) {
-      if (error instanceof Error)
-        throw new Error(`Failed to hash password: ${error.message}`);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      throw new Error(`Failed to hash password: ${errorMessage}`);
     }
   }
 
