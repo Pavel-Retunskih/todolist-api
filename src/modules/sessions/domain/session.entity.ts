@@ -2,14 +2,14 @@ export class Session {
   constructor(
     public readonly sessionId: string,
     public readonly deviceId: string,
-    public readonly refreshToken: string,
+    public readonly refreshTokenHash: string,
     public readonly userId: string,
     public readonly expiresAt: Date,
   ) {}
 
   static create({
     deviceId,
-    refreshToken,
+    refreshTokenHash,
     userId,
     expiresAt,
     sessionId,
@@ -17,27 +17,27 @@ export class Session {
     return {
       sessionId: sessionId,
       deviceId: deviceId,
-      refreshToken: refreshToken,
+      refreshTokenHash: refreshTokenHash,
       userId: userId,
       expiresAt: expiresAt,
-    };
+    }
   }
 
   static isExpired(session: Session): boolean {
-    return session.expiresAt.getTime() < Date.now();
+    return session.expiresAt.getTime() < Date.now()
   }
 
-  static refreshSession(
+  static rotate(
     session: Session,
     newExpiredAt: Date,
-    newRefreshToken: string,
+    newRefreshTokenHash: string,
   ): Session {
     return Session.create({
       sessionId: session.sessionId,
       deviceId: session.deviceId,
-      refreshToken: newRefreshToken,
+      refreshTokenHash: newRefreshTokenHash,
       userId: session.userId,
       expiresAt: newExpiredAt,
-    });
+    })
   }
 }
