@@ -118,42 +118,4 @@ export class AuthController {
 
     return { accessToken }
   }
-
-  @Post('logout-all')
-  @HttpCode(200)
-  async logoutAll(
-    @Req() request: Request,
-    @Res({ passthrough: true }) response: Response,
-  ) {
-    const user = (request as any).user
-    if (!user?.id) {
-      throw new BadRequestException('User not authenticated')
-    }
-
-    await this.authService.logoutAll(user.id)
-
-    response.clearCookie('refreshToken', {
-      path: '/api/v1/auth',
-    })
-
-    return { message: 'All sessions terminated' }
-  }
-
-  @Post('logout-others')
-  @HttpCode(200)
-  async logoutOthers(@Req() request: Request) {
-    const user = (request as any).user
-    if (!user?.id) {
-      throw new BadRequestException('User not authenticated')
-    }
-
-    const currentRefresh = request.cookies?.refreshToken as unknown as string
-    if (!currentRefresh) {
-      throw new BadRequestException('Refresh token not found')
-    }
-
-    await this.authService.logoutOthers(user.id, currentRefresh)
-
-    return { message: 'Other sessions terminated' }
-  }
 }
