@@ -1,7 +1,7 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
-import cookieParser from 'cookie-parser';
+import { NestFactory, Reflector } from '@nestjs/core'
+import { AppModule } from './app.module'
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard'
+import cookieParser from 'cookie-parser'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -10,12 +10,17 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1')
 
   // Подключаем парсинг cookies для доступа к request.cookies
-  app.use(cookieParser());
+  app.use(cookieParser())
 
   // Получаем Reflector из контекста приложения
-  const reflector = app.get(Reflector);
-  app.useGlobalGuards(new JwtAuthGuard(reflector));
-
+  const reflector = app.get(Reflector)
+  app.useGlobalGuards(new JwtAuthGuard(reflector))
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
   await app.listen(process.env.PORT ?? 5000)
 }
 

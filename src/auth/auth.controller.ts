@@ -12,6 +12,7 @@ import { type Response, type Request } from 'express'
 import { AuthService } from './auth.service'
 import { Public } from './decorators/auth.decorators'
 import { RegisterDTO } from './dto/reginster.dto'
+import { LoginDTO } from './dto/login.dto'
 
 @Controller('auth')
 export class AuthController {
@@ -31,6 +32,8 @@ export class AuthController {
     @Body() userDto: RegisterDTO,
     @Res({ passthrough: true }) response: Response,
   ) {
+    console.log('Registering user:', userDto)
+    if (!userDto) return new BadRequestException('Invalid request body')
     const user = await this.authService.register(userDto)
     response.cookie('refreshToken', user.refreshToken, {
       httpOnly: true,
@@ -49,7 +52,7 @@ export class AuthController {
   @Public()
   @Post('login')
   async login(
-    @Body() userDto: RegisterDTO,
+    @Body() userDto: LoginDTO,
     @Res({ passthrough: true }) response: Response,
   ) {
     const user = await this.authService.login(userDto)
@@ -89,5 +92,68 @@ export class AuthController {
     })
 
     return { message: 'Logged out successfully' }
+  }
+
+  @Public()
+  @Post('refresh')
+  @HttpCode(200)
+  async refresh(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const currentRefresh = request.cookies?.refreshToken as unknown as string
+    if (!currentRefresh) {
+      throw new BadRequestException('Refresh token not found')
+    }
+
+    const { accessToken, refreshToken } =
+      await this.authService.refresh(currentRefresh)
+
+    response.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/api/v1/auth',
+    })
+
+    return { accessToken }
+  }
+
+  @Post('logout-all')
+  @HttpCode(200)
+  async logoutAll(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const user = (request as any).user
+    if (!user?.id) {
+      throw new BadRequestException('User not authenticated')
+    }
+
+    await this.authService.logoutAll(user.id)
+
+    response.clearCookie('refreshToken', {
+      path: '/api/v1/auth',
+    })
+
+    return { message: 'All sessions terminated' }
+  }
+
+  @Post('logout-others')
+  @HttpCode(200)
+  async logoutOthers(@Req() request: Request) {
+    const user = (request as any).user
+    if (!user?.id) {
+      throw new BadRequestException('User not authenticated')
+    }
+
+    const currentRefresh = request.cookies?.refreshToken as unknown as string
+    if (!currentRefresh) {
+      throw new BadRequestException('Refresh token not found')
+    }
+
+    await this.authService.logoutOthers(user.id, currentRefresh)
+
+    return { message: 'Other sessions terminated' }
   }
 }
