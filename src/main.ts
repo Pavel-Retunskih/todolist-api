@@ -22,10 +22,6 @@ async function bootstrap() {
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean)
-  const apiKeys = (process.env.API_KEYS ?? '')
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean)
 
   const corsDelegate = (
     req: CorsRequest,
