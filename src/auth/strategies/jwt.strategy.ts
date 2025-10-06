@@ -27,7 +27,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     @Inject('UserRepository')
     private readonly userRepository: UserRepository,
   ) {
-    const jwtSecret: string | undefined = configService.get('jwt')
+    const jwtSecret: string | undefined =
+      configService.get<string>('JWT_ACCESS_SECRET') ||
+      configService.get<string>('jwt.accessSecret')
     if (!jwtSecret) {
       throw new Error('JWT secret not found in environment variables')
     }

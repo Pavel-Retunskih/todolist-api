@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './modules/users/users.module';
+import { Module } from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import { MongooseModule } from '@nestjs/mongoose'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { AuthModule } from './auth/auth.module'
+import { UsersModule } from './modules/users/users.module'
+import { TodolistsModule } from './modules/todolists/todolists.module'
 import {
   appConfig,
   databaseConfig,
@@ -12,7 +13,8 @@ import {
   mailConfig,
   storageConfig,
   throttleConfig,
-} from './config/configuration';
+  todolistsConfig,
+} from './config/configuration'
 
 @Module({
   imports: [
@@ -27,6 +29,7 @@ import {
         mailConfig,
         storageConfig,
         throttleConfig,
+        todolistsConfig,
       ],
     }),
 
@@ -42,6 +45,7 @@ import {
 
     AuthModule,
     UsersModule,
+    TodolistsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

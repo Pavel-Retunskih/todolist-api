@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 /**
  * Схема валидации переменных окружения
@@ -46,25 +46,26 @@ export const configSchema = z.object({
 
   // CORS Configuration
   CORS_ORIGIN: z.string().default('http://localhost:3000'),
-});
+  MAX_TODOLISTS_PER_USER: z.coerce.number().default(10),
+})
 
 /**
  * Тип конфигурации, автоматически выведенный из схемы Zod
  */
-export type Config = z.infer<typeof configSchema>;
+export type Config = z.infer<typeof configSchema>
 
 /**
  * Функция валидации переменных окружения
  */
 export function validateConfig(config: Record<string, unknown>): Config {
-  const result = configSchema.safeParse(config);
+  const result = configSchema.safeParse(config)
 
   if (!result.success) {
     const errors = result.error.issues.map(
       (error) => `${error.path.join('.')}: ${error.message}`,
-    );
-    throw new Error(`Configuration validation failed:\n${errors.join('\n')}`);
+    )
+    throw new Error(`Configuration validation failed:\n${errors.join('\n')}`)
   }
 
-  return result.data;
+  return result.data
 }
