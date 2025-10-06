@@ -82,6 +82,6 @@ export const throttleConfig = registerAs('throttle', () => {
 export const todolistsConfig = registerAs('todolists', () => {
   const config = validateConfig(process.env)
   return {
-    itemsPerPage: config.MAX_TODOLISTS_PER_USER,
+    maxPerUser: config.MAX_TODOLISTS_PER_USER,
   }
 })

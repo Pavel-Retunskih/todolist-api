@@ -19,11 +19,13 @@ export class TodolistsService {
   ): Promise<TodolistEntity> {
     const todolistsCount =
       await this.todoistsRepository.getTodolistsCountByOwnerId(ownerId)
-    if (
-      todolistsCount >=
-      this.configService.getOrThrow<number>('todolists.itemsPerPage')
-    ) {
-      throw new TooManyTodolistsException()
+    const maxPerUser = this.configService.getOrThrow<number>(
+      'todolists.maxPerUser',
+    )
+    if (todolistsCount >= maxPerUser) {
+      throw new TooManyTodolistsException(
+        `You has reached the maximum number of todolists (${maxPerUser}).`,
+      )
     }
     return await this.todoistsRepository.createTodolist({
       ownerId,
