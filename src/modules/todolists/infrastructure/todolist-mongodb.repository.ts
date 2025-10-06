@@ -40,16 +40,16 @@ export class TodolistMongoRepository implements TodolistRepository {
         { new: true, runValidators: true },
       )
       .exec()
-    if (!updatedTodolist) throw new Error('Todolist not found')
-    return updatedTodolist.toObject()
+
+    return updatedTodolist ? updatedTodolist.toObject() : null
   }
 
-  async deleteTodolist(id: string): Promise<void> {
+  async deleteTodolist(id: string): Promise<TodolistEntity | null> {
     const deletedTodolist = await this.todolistModel.findByIdAndDelete(id)
-    if (!deletedTodolist) throw new Error('Todolist not found')
+    return deletedTodolist ? deletedTodolist : null
   }
 
-  async getByTodolistId(id: string): Promise<TodolistEntity | null> {
+  async getTodolistById(id: string): Promise<TodolistEntity | null> {
     const todolist = await this.todolistModel.findById(id).exec()
     return todolist ? todolist.toObject() : null
   }
@@ -60,5 +60,9 @@ export class TodolistMongoRepository implements TodolistRepository {
       .sort({ createdAt: -1 })
       .exec()
     return todolists.map((todolist) => todolist.toObject())
+  }
+
+  async getTodolistsCountByOwnerId(ownerId: string): Promise<number> {
+    return this.todolistModel.countDocuments({ ownerId }).exec()
   }
 }

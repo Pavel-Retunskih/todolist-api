@@ -22,20 +22,22 @@ export class TodolistSchema implements TodolistEntity {
   title: string
 
   @Prop({
+    nullable: true,
     required: false,
     type: String,
     trim: true,
   })
-  imageUrl?: string
+  imageUrl: string | null
 
   @Prop({
     required: false,
+    nullable: true,
     type: String,
     minlength: [10, 'Description should be at least 10 characters long'],
     maxlength: [200, 'Description should not exceed 200 characters long'],
     trim: true,
   })
-  description?: string
+  description: string | null
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
