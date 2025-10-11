@@ -5,12 +5,46 @@ import { ApiKeyGuard } from './common/guards/api-key.guard'
 import cookieParser from 'cookie-parser'
 import cors, { CorsRequest } from 'cors'
 import { CorsOptions } from 'cors'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
   // Устанавливаем глобальный префикс для всех API маршрутов
   app.setGlobalPrefix('api/v1')
+
+  // Swagger docs (enabled only in non-production)
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('Todolist API')
+      .setDescription('API documentation for the Todolist service')
+      .setVersion('1.0.0')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Enter JWT access token',
+          in: 'header',
+        },
+        'bearer',
+      )
+      .addApiKey(
+        {
+          type: 'apiKey',
+          name: 'x-api-key',
+          in: 'header',
+          description: 'Optional API key header for privileged routes',
+        },
+        'apiKey',
+      )
+      .build()
+
+    const document = SwaggerModule.createDocument(app, config)
+    SwaggerModule.setup('docs', app, document, {
+      swaggerOptions: { persistAuthorization: true },
+    })
+  }
 
   // Подключаем парсинг cookies для доступа к request.cookies
   app.use(cookieParser())
