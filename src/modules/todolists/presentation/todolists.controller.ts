@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
-import { TodolistsService } from './servise/todolists.service'
-import { type CreateTodoDTO, UpdateTodoDTO } from './dto/CreateTodoDTO'
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
-import { CurrentUserId } from '../../common/decorators/current-user-id.decorator'
+import { TodolistsService } from '../servise/todolists.service'
+import { type CreateTodoDTO, UpdateTodoDTO } from '../dto/CreateTodoDTO'
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
+import { CurrentUserId } from '../../../common/decorators/current-user-id.decorator'
 
 @Controller('todolists')
 export class TodolistsController {

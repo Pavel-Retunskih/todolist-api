@@ -5,7 +5,7 @@ import {
   TodolistSchemaFactory,
 } from './infrastructure/todolist.schema'
 import { TodolistsService } from './servise/todolists.service'
-import { TodolistsController } from './todolists.controler'
+import { TodolistsController } from './presentation/todolists.controller'
 import { TodolistMongoRepository } from './infrastructure/todolist-mongodb.repository'
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
 
