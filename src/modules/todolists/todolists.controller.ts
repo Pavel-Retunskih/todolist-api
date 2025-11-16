@@ -12,17 +12,16 @@ import { TodolistsService } from './servise/todolists.service'
 import { CreateTodoDTO, UpdateTodoDTO } from './dto/CreateTodoDTO'
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
 import { CurrentUserId } from '../../common/decorators/current-user-id.decorator'
-import { SessionRequiredGuard } from '../../auth/guards/session-required.guard'
 import {
-  ApiTags,
   ApiBearerAuth,
-  ApiSecurity,
-  ApiOperation,
-  ApiOkResponse,
-  ApiCreatedResponse,
-  ApiParam,
-  ApiUnauthorizedResponse,
   ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiSecurity,
+  ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
 
 @ApiTags('Todolists')
@@ -33,7 +32,7 @@ export class TodolistsController {
   constructor(private readonly todolistService: TodolistsService) {}
 
   @Post('create-todolist')
-  @UseGuards(JwtAuthGuard, SessionRequiredGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create a new todolist' })
   @ApiBody({ type: CreateTodoDTO })
   @ApiCreatedResponse({
@@ -71,7 +70,7 @@ export class TodolistsController {
   }
 
   @Patch('update-todolist/:id')
-  @UseGuards(JwtAuthGuard, SessionRequiredGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update existing todolist' })
   @ApiParam({ name: 'id', description: 'Todolist ID' })
   @ApiBody({ type: UpdateTodoDTO })
@@ -110,7 +109,7 @@ export class TodolistsController {
   }
 
   @Delete('delete-todolist/:id')
-  @UseGuards(JwtAuthGuard, SessionRequiredGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Delete todolist' })
   @ApiParam({ name: 'id', description: 'Todolist ID' })
   @ApiOkResponse({
@@ -140,7 +139,7 @@ export class TodolistsController {
   }
 
   @Get('get-todolist/:id')
-  @UseGuards(JwtAuthGuard, SessionRequiredGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get todolist by ID' })
   @ApiParam({ name: 'id', description: 'Todolist ID' })
   @ApiOkResponse({
@@ -170,7 +169,7 @@ export class TodolistsController {
   }
 
   @Get('get-all')
-  @UseGuards(JwtAuthGuard, SessionRequiredGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get all todolists for current user' })
   @ApiOkResponse({
     description: 'List of todolists',
