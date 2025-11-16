@@ -2,8 +2,8 @@ import {
   createParamDecorator,
   ExecutionContext,
   SetMetadata,
-} from '@nestjs/common';
-import { IS_PUBLIC_KEY } from '../guards/jwt-auth.guard';
+} from '@nestjs/common'
+import { IS_PUBLIC_KEY } from '../guards/jwt-auth.guard'
 
 /**
  * Декоратор для пометки маршрутов как публичных
@@ -14,7 +14,7 @@ import { IS_PUBLIC_KEY } from '../guards/jwt-auth.guard';
  * @Post('login')
  * async login() { ... }
  */
-export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
+export const Public = () => SetMetadata(IS_PUBLIC_KEY, true)
 
 /**
  * Декоратор для получения текущего аутентифицированного пользователя
@@ -34,23 +34,23 @@ export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
  */
 export const CurrentUser = createParamDecorator(
   (data: string | undefined, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
-    const user = request.user;
+    const request: any = ctx.switchToHttp().getRequest()
+    const user = request.user
 
     // Если указано конкретное поле, возвращаем его
-    return data ? user?.[data] : user;
+    return data ? user?.[data] : user
   },
-);
+)
 
 /**
  * Интерфейс для типизации текущего пользователя
  * Используется с декоратором @CurrentUser()
  */
 export interface AuthenticatedUser {
-  id: string;
-  email: string;
-  createdAt: Date;
-  updatedAt: Date;
+  id: string
+  email: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 /**
@@ -68,9 +68,9 @@ export const User = createParamDecorator(
     data: keyof AuthenticatedUser | undefined,
     ctx: ExecutionContext,
   ): AuthenticatedUser | any => {
-    const request = ctx.switchToHttp().getRequest();
-    const user = request.user;
+    const request = ctx.switchToHttp().getRequest()
+    const user = request.user
 
-    return data ? user?.[data] : user;
+    return data ? user?.[data] : user
   },
-);
+)

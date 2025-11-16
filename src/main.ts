@@ -18,7 +18,7 @@ async function bootstrap() {
   // Динамический CORS: с API key разрешаем любой origin без credentials,
   // иначе — строго по списку из CORS_ORIGIN и с credentials (для cookie)
 
-  const allowedOrigins = (process.env.CORS_ORIGIN ?? 'http://localhost:3006')
+  const allowedOrigins = (process.env.CORS_ORIGIN ?? 'http://localhost:3000')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean)

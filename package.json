@@ -21,7 +21,7 @@
     "db:start": "docker-compose up -d mongodb",
     "db:seed": "node scripts/seed-db.js",
     "db:reset": "docker-compose down -v && npm run db:start && timeout /t 5 && npm run db:seed",
-    "dev:setup": "npm run db:start && timeout /t 5 && npm run db:seed",
+    "dev:setup": "npm run db:start && npm run db:seed",
     "dev": "pnpm run dev:setup && pnpm run start:dev",
     "dev:clean": "docker-compose down -v && npm run dev",
     "docker:down": "docker-compose down",
