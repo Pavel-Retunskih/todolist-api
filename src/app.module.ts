@@ -5,7 +5,6 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
 import { UsersModule } from './modules/users/users.module'
-import { TodolistsModule } from './modules/todolists/todolists.module'
 import {
   appConfig,
   databaseConfig,
@@ -16,6 +15,7 @@ import {
   todolistsConfig,
 } from './config/configuration'
 import { TasksModule } from './modules/tasks/tasks.module'
+import { TodolistsModule } from './modules/todolists/todolists.module'
 
 @Module({
   imports: [
@@ -43,7 +43,6 @@ import { TasksModule } from './modules/tasks/tasks.module'
       }),
       inject: [ConfigService],
     }),
-
     AuthModule,
     UsersModule,
     TodolistsModule,

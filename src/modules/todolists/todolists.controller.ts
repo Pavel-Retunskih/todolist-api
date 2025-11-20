@@ -8,7 +8,6 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common'
-import { TodolistsService } from './servise/todolists.service'
 import { CreateTodoDTO, UpdateTodoDTO } from './dto/CreateTodoDTO'
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
 import { CurrentUserId } from '../../common/decorators/current-user-id.decorator'
@@ -23,6 +22,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger'
+import { TodolistsService } from './service/todolists.service'
 
 @ApiTags('Todolists')
 @ApiBearerAuth('bearer')
