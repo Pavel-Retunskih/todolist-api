@@ -5,6 +5,7 @@ import { ApiKeyGuard } from './common/guards/api-key.guard'
 import cookieParser from 'cookie-parser'
 import cors, { CorsRequest } from 'cors'
 import { CorsOptions } from 'cors'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -12,13 +13,46 @@ async function bootstrap() {
   // Устанавливаем глобальный префикс для всех API маршрутов
   app.setGlobalPrefix('api/v1')
 
+  // Swagger docs (enabled only in non-production)
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('Todolist API')
+      .setDescription('API documentation for the Todolist service')
+      .setVersion('1.0.0')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Enter JWT access token',
+          in: 'header',
+        },
+        'bearer',
+      )
+      .addApiKey(
+        {
+          type: 'apiKey',
+          name: 'x-api-key',
+          in: 'header',
+          description: 'Optional API key header for privileged routes',
+        },
+        'apiKey',
+      )
+      .build()
+
+    const document = SwaggerModule.createDocument(app, config)
+    SwaggerModule.setup('docs', app, document, {
+      swaggerOptions: { persistAuthorization: true },
+    })
+  }
+
   // Подключаем парсинг cookies для доступа к request.cookies
   app.use(cookieParser())
 
   // Динамический CORS: с API key разрешаем любой origin без credentials,
   // иначе — строго по списку из CORS_ORIGIN и с credentials (для cookie)
 
-  const allowedOrigins = (process.env.CORS_ORIGIN ?? 'http://localhost:3006')
+  const allowedOrigins = (process.env.CORS_ORIGIN ?? 'http://localhost:3000')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean)

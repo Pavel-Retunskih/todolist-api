@@ -23,7 +23,12 @@ export class AuthService {
   async register(user: RegisterDTO) {
     const existingUser = await this.userRepository.getUserByEmail(user.email)
     if (existingUser) {
-      throw new BadRequestException('Email already in use')
+      throw new BadRequestException({
+        error: 'Bad Request',
+        statusCode: 400,
+        field: 'email',
+        message: 'Email already in use',
+      })
     }
     const hashedPassword = await PasswordUtil.hashPassword(user.password)
 
