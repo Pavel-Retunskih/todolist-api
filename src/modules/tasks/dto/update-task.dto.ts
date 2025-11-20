@@ -17,6 +17,7 @@ export class UpdateTaskDTO {
     description: 'Task title',
     minLength: 3,
     maxLength: 50,
+    example: 'Updated project report',
   })
   @IsOptional()
   @IsString()
@@ -29,6 +30,7 @@ export class UpdateTaskDTO {
     description: 'Task description',
     minLength: 3,
     maxLength: 200,
+    example: 'Updated description for the report',
   })
   @IsOptional()
   @MinLength(3)
@@ -37,30 +39,34 @@ export class UpdateTaskDTO {
 
   @ApiPropertyOptional({
     description: 'Image URL',
-    example: 'https://example.com/image.jpg',
+    example: 'https://example.com/updated-image.jpg',
   })
   @IsOptional()
   @IsUrl({ require_protocol: true }, { message: 'Invalid image URL' })
   imageUrl?: string
 
-  @ApiPropertyOptional({ description: 'Task tags', type: [String] })
+  @ApiPropertyOptional({
+    description: 'Task tags',
+    type: [String],
+    example: ['work', 'updated', 'report'],
+  })
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
   tags?: string[]
 
-  @ApiPropertyOptional({ description: 'Task completed status' })
+  @ApiPropertyOptional({ description: 'Task completed status', example: true })
   @IsOptional()
   @IsBoolean()
   completed?: boolean
 
-  @ApiPropertyOptional({ description: 'Task order' })
+  @ApiPropertyOptional({ description: 'Task order', example: 1 })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
   order?: number
 
-  @ApiPropertyOptional({ description: 'Task priority' })
+  @ApiPropertyOptional({ description: 'Task priority', example: 5 })
   @IsOptional()
   @Type(() => Number)
   @IsNumber()
