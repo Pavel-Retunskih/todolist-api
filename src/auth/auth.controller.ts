@@ -1,15 +1,23 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
-  Res,
-  Req,
   HttpCode,
-  BadRequestException,
+  Post,
+  Req,
+  Res,
 } from '@nestjs/common'
-import { type Response, type Request } from 'express'
-import { ApiTags, ApiOperation, ApiOkResponse, ApiCreatedResponse, ApiBadRequestResponse, ApiForbiddenResponse, ApiBody } from '@nestjs/swagger'
+import { type Request, type Response } from 'express'
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger'
 import { AuthService } from './auth.service'
 import { Public } from './decorators/auth.decorators'
 import { RegisterDTO } from './dto/reginster.dto'
@@ -22,7 +30,9 @@ export class AuthController {
 
   @Get('health')
   @ApiOperation({ summary: 'Auth health check' })
-  @ApiOkResponse({ schema: { example: { status: 'ok', message: 'Auth module is working' } } })
+  @ApiOkResponse({
+    schema: { example: { status: 'ok', message: 'Auth module is working' } },
+  })
   getHealth(): { status: string; message: string } {
     return {
       status: 'ok',
@@ -34,7 +44,16 @@ export class AuthController {
   @Post('register')
   @ApiOperation({ summary: 'Register new user' })
   @ApiBody({ type: RegisterDTO })
-  @ApiCreatedResponse({ description: 'User registered', schema: { example: { accessToken: 'jwt.access.token', id: '665f1d2c9f1b2c0012345678', email: 'user@example.com' } } })
+  @ApiCreatedResponse({
+    description: 'User registered',
+    schema: {
+      example: {
+        accessToken: 'jwt.access.token',
+        id: '665f1d2c9f1b2c0012345678',
+        email: 'user@example.com',
+      },
+    },
+  })
   @ApiBadRequestResponse({ description: 'Invalid request body' })
   async register(
     @Body() userDto: RegisterDTO,
@@ -61,7 +80,16 @@ export class AuthController {
   @Post('login')
   @ApiOperation({ summary: 'Login with credentials' })
   @ApiBody({ type: LoginDTO })
-  @ApiOkResponse({ description: 'Logged in', schema: { example: { accessToken: 'jwt.access.token', id: '665f1d2c9f1b2c0012345678', email: 'user@example.com' } } })
+  @ApiOkResponse({
+    description: 'Logged in',
+    schema: {
+      example: {
+        accessToken: 'jwt.access.token',
+        id: '665f1d2c9f1b2c0012345678',
+        email: 'user@example.com',
+      },
+    },
+  })
   @ApiForbiddenResponse({ description: 'Invalid email or password' })
   async login(
     @Body() userDto: LoginDTO,
@@ -87,8 +115,12 @@ export class AuthController {
   @Public()
   @Post('logout')
   @HttpCode(200)
-  @ApiOperation({ summary: 'Logout and invalidate current refresh token (cookie)' })
-  @ApiOkResponse({ schema: { example: { message: 'Logged out successfully' } } })
+  @ApiOperation({
+    summary: 'Logout and invalidate current refresh token (cookie)',
+  })
+  @ApiOkResponse({
+    schema: { example: { message: 'Logged out successfully' } },
+  })
   @ApiBadRequestResponse({ description: 'Refresh token not found' })
   async logout(
     @Req() request: Request,
@@ -112,7 +144,9 @@ export class AuthController {
   @Public()
   @Post('refresh')
   @HttpCode(200)
-  @ApiOperation({ summary: 'Rotate refresh token (cookie) and issue new access token' })
+  @ApiOperation({
+    summary: 'Rotate refresh token (cookie) and issue new access token',
+  })
   @ApiOkResponse({ schema: { example: { accessToken: 'jwt.access.token' } } })
   @ApiBadRequestResponse({ description: 'Refresh token not found' })
   async refresh(

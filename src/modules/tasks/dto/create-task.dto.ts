@@ -25,7 +25,7 @@ export class CreateTaskDTO {
 
   @Optional()
   @MinLength(3)
-  @MaxLength(100)
+  @MaxLength(200)
   description: string
 
   @Optional()

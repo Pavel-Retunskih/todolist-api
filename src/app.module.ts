@@ -15,7 +15,6 @@ import {
   throttleConfig,
   todolistsConfig,
 } from './config/configuration'
-import { TasksController } from './modules/tasks/pressentation/tasks.controller'
 import { TasksModule } from './modules/tasks/tasks.module'
 
 @Module({

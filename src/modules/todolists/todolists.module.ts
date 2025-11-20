@@ -4,10 +4,9 @@ import {
   TodolistSchema,
   TodolistSchemaFactory,
 } from './infrastructure/todolist.schema'
-import { TodolistsService } from './servise/todolists.service'
+import { TodolistsService } from './service/todolists.service'
 import { TodolistsController } from './presentation/todolists.controller'
 import { TodolistMongoRepository } from './infrastructure/todolist-mongodb.repository'
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
 
 @Module({
   imports: [
@@ -21,8 +20,8 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'
       provide: 'TodolistsRepository',
       useClass: TodolistMongoRepository,
     },
-    JwtAuthGuard,
   ],
   controllers: [TodolistsController],
+  exports: ['TodolistsRepository'],
 })
 export class TodolistsModule {}

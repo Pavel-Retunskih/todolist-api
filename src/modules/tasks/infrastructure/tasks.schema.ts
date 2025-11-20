@@ -38,13 +38,23 @@ export class TaskSchema implements TaskEntity {
   })
   description?: string
 
+  @Prop({ default: false })
+  completed: boolean
+
+  @Prop({ default: 0 })
+  order: number
+
+  @Prop({ default: 0 })
+  priority: number
+
+  @Prop({ type: [String] })
+  tags?: string[]
+
+  @Prop({ required: false })
+  imageUrl?: string
+
   createdAt: Date
   updatedAt: Date
-  completed: boolean
-  order: number
-  priority: number
-  tags?: string[]
-  imageUrl?: string
 }
 
 export const TaskSchemaFactory = SchemaFactory.createForClass(TaskSchema)
