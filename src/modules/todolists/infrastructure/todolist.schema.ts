@@ -15,7 +15,7 @@ export class TodolistSchema implements TodolistEntity {
   @Prop({
     required: [true, 'Title is required'],
     type: String,
-    minlength: [5, 'Title should be at least 5 characters long'],
+    minlength: [3, 'Title should be at least 3 characters long'],
     maxlength: [50, 'Title should not exceed 50 characters long'],
     trim: true, // Убирает пробелы по краям
   })
@@ -33,8 +33,8 @@ export class TodolistSchema implements TodolistEntity {
     required: false,
     nullable: true,
     type: String,
-    minlength: [10, 'Description should be at least 10 characters long'],
-    maxlength: [200, 'Description should not exceed 200 characters long'],
+    minlength: [5, 'Description should be at least 5 characters long'],
+    maxlength: [500, 'Description should not exceed 500 characters long'],
     trim: true,
   })
   description: string | null

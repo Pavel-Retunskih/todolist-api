@@ -1,4 +1,5 @@
 import { NestFactory, Reflector } from '@nestjs/core'
+import { ValidationPipe } from '@nestjs/common'
 import { AppModule } from './app.module'
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard'
 import { ApiKeyGuard } from './common/guards/api-key.guard'
@@ -9,6 +10,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+app.useGlobalPipes(new ValidationPipe())
 
   // Устанавливаем глобальный префикс для всех API маршрутов
   app.setGlobalPrefix('api/v1')
