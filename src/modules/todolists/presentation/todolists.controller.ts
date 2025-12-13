@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common'
 
 import { type CreateTodoDTO, UpdateTodoDTO } from '../dto/CreateTodoDTO'
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard'
@@ -23,6 +32,7 @@ export class TodolistsController {
     )
     return {
       id: todo.id,
+      ownerId: todo.ownerId,
       title: todo.title,
       imageUrl: todo.imageUrl,
       description: todo.description,
@@ -33,7 +43,7 @@ export class TodolistsController {
 
   @Post('update-todolist/:id')
   @UseGuards(JwtAuthGuard)
-  async update(
+  async updatePost(
     @Body()
     updateTodolistDto: UpdateTodoDTO,
     @Param('id')
@@ -45,6 +55,7 @@ export class TodolistsController {
     )
     return {
       id: todo.id,
+      ownerId: todo.ownerId,
       title: todo.title,
       imageUrl: todo.imageUrl,
       description: todo.description,
@@ -53,12 +64,24 @@ export class TodolistsController {
     }
   }
 
+  @Put('update-todolist/:id')
+  @UseGuards(JwtAuthGuard)
+  async update(
+    @Body()
+    updateTodolistDto: UpdateTodoDTO,
+    @Param('id')
+    todoId: string,
+  ) {
+    return this.updatePost(updateTodolistDto, todoId)
+  }
+
   @Post('delete-todolist/:id')
   @UseGuards(JwtAuthGuard)
-  async delete(@Param('id') todoId: string) {
+  async deletePost(@Param('id') todoId: string) {
     const todo = await this.todolistService.deleteTodolist(todoId)
     return {
       id: todo?.id,
+      ownerId: todo?.ownerId,
       title: todo?.title,
       imageUrl: todo?.imageUrl,
       description: todo?.description,
@@ -67,12 +90,19 @@ export class TodolistsController {
     }
   }
 
+  @Delete('delete-todolist/:id')
+  @UseGuards(JwtAuthGuard)
+  async delete(@Param('id') todoId: string) {
+    return this.deletePost(todoId)
+  }
+
   @Get('get-todolist/:id')
   @UseGuards(JwtAuthGuard)
   async getById(@Param('id') todoId: string) {
     const todo = await this.todolistService.getTodolistById(todoId)
     return {
       id: todo?.id,
+      ownerId: todo?.ownerId,
       title: todo?.title,
       imageUrl: todo?.imageUrl,
       description: todo?.description,
@@ -87,6 +117,7 @@ export class TodolistsController {
     const todos = await this.todolistService.getAllByOwnerId(ownerId)
     return todos.map((todo) => ({
       id: todo.id,
+      ownerId: todo.ownerId,
       title: todo.title,
       imageUrl: todo.imageUrl,
       description: todo.description,

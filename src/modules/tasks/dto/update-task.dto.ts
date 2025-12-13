@@ -33,9 +33,10 @@ export class UpdateTaskDTO {
     example: 'Updated description for the report',
   })
   @IsOptional()
+  @IsString()
   @MinLength(3)
   @MaxLength(200)
-  description?: string
+  description?: string | null
 
   @ApiPropertyOptional({
     description: 'Image URL',
@@ -43,7 +44,7 @@ export class UpdateTaskDTO {
   })
   @IsOptional()
   @IsUrl({ require_protocol: true }, { message: 'Invalid image URL' })
-  imageUrl?: string
+  imageUrl?: string | null
 
   @ApiPropertyOptional({
     description: 'Task tags',
@@ -53,7 +54,7 @@ export class UpdateTaskDTO {
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  tags?: string[]
+  tags?: string[] | null
 
   @ApiPropertyOptional({ description: 'Task completed status', example: true })
   @IsOptional()

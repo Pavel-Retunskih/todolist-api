@@ -10,9 +10,9 @@ export interface CreateTaskArgs {
 
 export interface UpdateTaskArgs {
   title?: string
-  imageUrl?: string
-  description?: string
-  tags?: string[]
+  imageUrl?: string | null
+  description?: string | null
+  tags?: string[] | null
   completed?: boolean
   order?: number
   priority?: number

@@ -18,12 +18,19 @@ export class TasksService {
     private readonly todolistsRepository: TodolistRepository,
   ) {}
 
+  private isTodolistOwner(
+    todolist: { ownerId: string },
+    userId: string,
+  ): boolean {
+    return String(todolist.ownerId) === String(userId)
+  }
+
   async createTask(
     userId: string,
     { title, tags, description, imageUrl, todolistId }: CreateTaskDTO,
   ): Promise<TaskEntity> {
     const todolist = await this.todolistsRepository.getTodolistById(todolistId)
-    if (!todolist || todolist.ownerId !== userId) {
+    if (!todolist || !this.isTodolistOwner(todolist, userId)) {
       throw new ForbiddenException('You do not own this todolist')
     }
 
@@ -41,7 +48,7 @@ export class TasksService {
     todolistId: string,
   ): Promise<TaskEntity[]> {
     const todolist = await this.todolistsRepository.getTodolistById(todolistId)
-    if (!todolist || todolist.ownerId !== userId) {
+    if (!todolist || !this.isTodolistOwner(todolist, userId)) {
       throw new ForbiddenException('You do not own this todolist')
     }
 
@@ -55,7 +62,7 @@ export class TasksService {
     const todolist = await this.todolistsRepository.getTodolistById(
       task.todolistId,
     )
-    if (!todolist || todolist.ownerId !== userId) {
+    if (!todolist || !this.isTodolistOwner(todolist, userId)) {
       throw new ForbiddenException('You do not own this task')
     }
 
@@ -73,19 +80,21 @@ export class TasksService {
     const todolist = await this.todolistsRepository.getTodolistById(
       task.todolistId,
     )
-    if (!todolist || todolist.ownerId !== userId) {
+    if (!todolist || !this.isTodolistOwner(todolist, userId)) {
       throw new ForbiddenException('You do not own this task')
     }
 
-    const patch: UpdateTaskArgs = {
-      title: updateData.title,
-      description: updateData.description,
-      imageUrl: updateData.imageUrl,
-      tags: updateData.tags,
-      completed: updateData.completed,
-      order: updateData.order,
-      priority: updateData.priority,
-    }
+    const patch: UpdateTaskArgs = {}
+
+    if (updateData.title !== undefined) patch.title = updateData.title
+    if (updateData.description !== undefined)
+      patch.description = updateData.description
+    if (updateData.imageUrl !== undefined) patch.imageUrl = updateData.imageUrl
+    if (updateData.tags !== undefined) patch.tags = updateData.tags
+    if (updateData.completed !== undefined)
+      patch.completed = updateData.completed
+    if (updateData.order !== undefined) patch.order = updateData.order
+    if (updateData.priority !== undefined) patch.priority = updateData.priority
 
     return await this.taskRepository.updateTask(id, patch)
   }
@@ -97,7 +106,7 @@ export class TasksService {
     const todolist = await this.todolistsRepository.getTodolistById(
       task.todolistId,
     )
-    if (!todolist || todolist.ownerId !== userId) {
+    if (!todolist || !this.isTodolistOwner(todolist, userId)) {
       throw new ForbiddenException('You do not own this task')
     }
 
