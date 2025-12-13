@@ -63,3 +63,19 @@ TaskSchemaFactory.virtual('id').get(function () {
   return this._id.toHexString()
 })
 TaskSchemaFactory.index({ todolistId: 1 })
+
+TaskSchemaFactory.set('toJSON', {
+  virtuals: true,
+  transform: (_, ret: Partial<TaskDocument>) => {
+    delete ret._id
+    return ret
+  },
+})
+
+TaskSchemaFactory.set('toObject', {
+  virtuals: true,
+  transform: (_, ret: Partial<TaskDocument>) => {
+    delete ret._id
+    return ret
+  },
+})

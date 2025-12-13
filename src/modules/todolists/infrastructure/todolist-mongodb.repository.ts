@@ -46,7 +46,7 @@ export class TodolistMongoRepository implements TodolistRepository {
 
   async deleteTodolist(id: string): Promise<TodolistEntity | null> {
     const deletedTodolist = await this.todolistModel.findByIdAndDelete(id)
-    return deletedTodolist ? deletedTodolist : null
+    return deletedTodolist ? deletedTodolist.toObject() : null
   }
 
   async getTodolistById(id: string): Promise<TodolistEntity | null> {

@@ -79,3 +79,11 @@ TodolistSchemaFactory.set('toJSON', {
     return ret
   },
 })
+
+TodolistSchemaFactory.set('toObject', {
+  virtuals: true,
+  transform: (_, ret: Partial<TodolistDocument>) => {
+    delete ret._id
+    return ret
+  },
+})

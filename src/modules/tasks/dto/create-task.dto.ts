@@ -1,12 +1,12 @@
 import {
   IsArray,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsUrl,
   MaxLength,
   MinLength,
 } from 'class-validator'
-import { Optional } from '@nestjs/common'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class CreateTaskDTO {
@@ -34,7 +34,7 @@ export class CreateTaskDTO {
     description: 'Image URL',
     example: 'https://example.com/image.jpg',
   })
-  @Optional()
+  @IsOptional()
   @IsUrl({ require_protocol: true }, { message: 'Invalid image URL' })
   imageUrl: string | null
 
@@ -44,17 +44,19 @@ export class CreateTaskDTO {
     maxLength: 200,
     example: 'Finish the quarterly report by end of day',
   })
-  @Optional()
+  @IsOptional()
+  @IsString()
   @MinLength(3)
   @MaxLength(200)
-  description: string
+  description: string | null
 
   @ApiPropertyOptional({
     description: 'Task tags',
     type: [String],
     example: ['work', 'urgent', 'report'],
   })
-  @Optional()
+  @IsOptional()
   @IsArray()
+  @IsString({ each: true })
   tags: string[] | null
 }
