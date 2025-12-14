@@ -1,6 +1,7 @@
 import {
   IsArray,
   IsBoolean,
+  IsDateString,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -72,4 +73,12 @@ export class UpdateTaskDTO {
   @Type(() => Number)
   @IsNumber()
   priority?: number
+
+  @ApiPropertyOptional({
+    description: 'Due date in ISO format',
+    example: '2025-01-31T12:00:00.000Z',
+  })
+  @IsOptional()
+  @IsDateString()
+  dueDate?: string | null
 }

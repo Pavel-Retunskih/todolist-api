@@ -6,6 +6,7 @@ export interface CreateTaskArgs {
   imageUrl: string | null
   description: string | null
   tags: string[] | null
+  dueDate?: Date | null
 }
 
 export interface UpdateTaskArgs {
@@ -16,6 +17,7 @@ export interface UpdateTaskArgs {
   completed?: boolean
   order?: number
   priority?: number
+  dueDate?: Date | null
 }
 
 export interface TasksRepository {

@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common'
 import {
   ApiBody,
@@ -18,6 +19,7 @@ import { TasksService } from '../service/tasks.service'
 import { CreateTaskDTO } from '../dto/create-task.dto'
 import { UpdateTaskDTO } from '../dto/update-task.dto'
 import { CurrentUserId } from '../../../common/decorators/current-user-id.decorator'
+import { FilterTasksDTO } from '../dto/filter-tasks.dto'
 
 @ApiTags('Tasks')
 @Controller('tasks')
@@ -82,8 +84,13 @@ export class TasksController {
   async getAll(
     @Param('todolistId') todolistId: string,
     @CurrentUserId() userId: string,
+    @Query() filters: FilterTasksDTO,
   ) {
-    return await this.tasksService.getAllTodolistTasks(userId, todolistId)
+    return await this.tasksService.getAllTodolistTasks(
+      userId,
+      todolistId,
+      filters,
+    )
   }
 
   @Get(':id')

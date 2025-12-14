@@ -82,38 +82,32 @@ pnpm run docker:logs
 - **Тестовый пользователь:** `test@example.com` / `password123`
 - **4 тестовые задачи** в списке "My First Todo List"
 
-## 📚 API Документация
+## 📚 API Документация (основное)
 
-### Аутентификация
+- База: `http://localhost:3000/api/v1`
+- Swagger доступен (если включен) по `/api-docs`
+- Защищённые роуты требуют заголовок `Authorization: Bearer <accessToken>`
 
-#### Регистрация
-```http
-POST /api/v1/auth/register
-Content-Type: application/json
+### Auth (`/auth`)
+- `GET /health` — проверка работоспособности модуля
+- `POST /register` — регистрация, устанавливает refresh-токен в cookie, возвращает accessToken + данные пользователя
+- `POST /login` — логин, ставит refresh-токен в cookie, возвращает accessToken + данные пользователя
+- `POST /logout` — удаляет refresh cookie, инвалидирует токен
+- `POST /refresh` — обновляет refresh cookie и выдаёт новый accessToken
 
-{
-  "email": "user@example.com",
-  "password": "SecurePassword123"
-}
-```
+### Todolists (`/todolists`, guard JWT)
+- `POST /create-todolist` — создать список (тело: `CreateTodoDTO`)
+- `PATCH /update-todolist/:id` — обновить список (тело: `UpdateTodoDTO`)
+- `DELETE /delete-todolist/:id` — удалить список
+- `GET /get-todolist/:id` — получить список по id
+- `GET /get-all` — все списки текущего пользователя
 
-#### Ответ
-```json
-{
-  "user": {
-    "id": "507f1f77bcf86cd799439011",
-    "email": "user@example.com",
-    "createdAt": "2023-10-02T20:30:00.000Z"
-  },
-  "accessToken": "eyJhbGciOiJIUzI1NiIs...",
-  "refreshToken": "eyJhbGciOiJIUzI1NiIs..."
-}
-```
-
-### Защищенные эндпоинты
-```http
-Authorization: Bearer <accessToken>
-```
+### Tasks (`/tasks`, guard JWT)
+- `POST /` — создать задачу (тело: `CreateTaskDTO`, в том числе `todolistId`)
+- `GET /:todolistId` — все задачи списка
+- `GET /:id` — получить задачу по id
+- `PATCH /:id` — обновить задачу (тело: `UpdateTaskDTO`)
+- `DELETE /:id` — удалить задачу
 
 ## 🏗️ Архитектура
 
@@ -168,8 +162,8 @@ docker-compose --profile dev up -d
 
 ## 📝 TODO
 
-- [ ] TodoLists CRUD API
-- [ ] Tasks CRUD API  
+- [x] TodoLists CRUD API
+- [x] Tasks CRUD API  
 - [ ] Drag & Drop функциональность
 - [ ] Upload изображений
 - [ ] Swagger документация

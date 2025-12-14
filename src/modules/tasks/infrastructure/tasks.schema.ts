@@ -50,6 +50,9 @@ export class TaskSchema implements TaskEntity {
   @Prop({ type: [String] })
   tags?: string[]
 
+  @Prop({ type: Date, required: false, index: true })
+  dueDate?: Date | null
+
   @Prop({ required: false })
   imageUrl?: string
 

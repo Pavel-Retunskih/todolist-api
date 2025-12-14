@@ -7,6 +7,7 @@ export interface TaskEntity {
   completed: boolean
   order: number
   priority: number
+  dueDate?: Date | null
   tags?: string[]
   description?: string
   imageUrl?: string

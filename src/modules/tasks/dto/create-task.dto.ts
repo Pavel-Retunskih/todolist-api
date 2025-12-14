@@ -1,5 +1,6 @@
 import {
   IsArray,
+  IsDateString,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -59,4 +60,12 @@ export class CreateTaskDTO {
   @IsArray()
   @IsString({ each: true })
   tags: string[] | null
+
+  @ApiPropertyOptional({
+    description: 'Due date in ISO format',
+    example: '2025-01-31T12:00:00.000Z',
+  })
+  @IsOptional()
+  @IsDateString()
+  dueDate?: string | null
 }

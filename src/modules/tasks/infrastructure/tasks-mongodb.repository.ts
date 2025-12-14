@@ -28,6 +28,7 @@ export class TasksMongodbRepository implements TasksRepository {
       imageUrl: createData.imageUrl,
       description: createData.description,
       tags: createData.tags,
+      dueDate: createData.dueDate,
       completed: false,
       order: nextOrder,
     })

@@ -27,7 +27,7 @@ export class TasksService {
 
   async createTask(
     userId: string,
-    { title, tags, description, imageUrl, todolistId }: CreateTaskDTO,
+    { title, tags, description, imageUrl, todolistId, dueDate }: CreateTaskDTO,
   ): Promise<TaskEntity> {
     const todolist = await this.todolistsRepository.getTodolistById(todolistId)
     if (!todolist || !this.isTodolistOwner(todolist, userId)) {
@@ -40,19 +40,60 @@ export class TasksService {
       description: description ?? null,
       imageUrl: imageUrl ?? null,
       todolistId,
+      dueDate: dueDate ? new Date(dueDate) : null,
     } as CreateTaskArgs)
   }
 
   async getAllTodolistTasks(
     userId: string,
     todolistId: string,
+    filters?: { minPriority?: number; dueInDays?: number },
   ): Promise<TaskEntity[]> {
     const todolist = await this.todolistsRepository.getTodolistById(todolistId)
     if (!todolist || !this.isTodolistOwner(todolist, userId)) {
       throw new ForbiddenException('You do not own this todolist')
     }
 
-    return await this.taskRepository.getAllTodolistTasks(todolistId)
+    let tasks = await this.taskRepository.getAllTodolistTasks(todolistId)
+
+    if (filters) {
+      const { minPriority, dueInDays } = filters
+
+      const hasMinPriority = minPriority !== undefined
+      const hasDueInDays = dueInDays !== undefined
+
+      const threshold = hasDueInDays
+        ? Date.now() + dueInDays * 24 * 60 * 60 * 1000
+        : null
+
+      if (hasMinPriority || hasDueInDays) {
+        tasks = tasks.filter((task) => {
+          const matchesPriority = hasMinPriority
+            ? task.priority >= minPriority
+            : false
+
+          const matchesDue = hasDueInDays
+            ? Boolean(task.dueDate) &&
+              new Date(task.dueDate as Date).getTime() <= (threshold as number)
+            : false
+
+          return matchesPriority || matchesDue
+        })
+      }
+
+      tasks.sort((a, b) => {
+        const aDue = a.dueDate
+          ? new Date(a.dueDate).getTime()
+          : Number.POSITIVE_INFINITY
+        const bDue = b.dueDate
+          ? new Date(b.dueDate).getTime()
+          : Number.POSITIVE_INFINITY
+        if (aDue !== bDue) return aDue - bDue
+        return b.priority - a.priority
+      })
+    }
+
+    return tasks
   }
 
   async getTaskById(userId: string, id: string): Promise<TaskEntity | null> {
@@ -95,6 +136,8 @@ export class TasksService {
       patch.completed = updateData.completed
     if (updateData.order !== undefined) patch.order = updateData.order
     if (updateData.priority !== undefined) patch.priority = updateData.priority
+    if (updateData.dueDate !== undefined)
+      patch.dueDate = updateData.dueDate ? new Date(updateData.dueDate) : null
 
     return await this.taskRepository.updateTask(id, patch)
   }
