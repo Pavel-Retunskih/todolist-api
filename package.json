@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db:start": "docker-compose up -d mongodb",
+    "db:start": "docker-compose up -d mongodb redis",
     "db:seed": "node scripts/seed-db.js",
     "db:reset": "docker-compose down -v && npm run db:start && timeout /t 5 && npm run db:seed",
     "dev:setup": "npm run db:start && npm run db:seed",
@@ -49,6 +49,7 @@
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
+    "redis": "^4.7.0",
     "swagger-ui-express": "^5.0.1",
     "zod": "^4.1.11"
   },

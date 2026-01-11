@@ -47,6 +47,7 @@ export const configSchema = z.object({
   // CORS Configuration
   CORS_ORIGIN: z.string().default('http://localhost:3000'),
   MAX_TODOLISTS_PER_USER: z.coerce.number().default(10),
+  REDIS_URL: z.string().optional(),
 })
 
 /**

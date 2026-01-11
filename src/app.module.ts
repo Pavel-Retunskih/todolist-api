@@ -16,6 +16,7 @@ import {
 } from './config/configuration'
 import { TasksModule } from './modules/tasks/tasks.module'
 import { TodolistsModule } from './modules/todolists/todolists.module'
+import { RedisModule } from './redis/redis.module'
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { TodolistsModule } from './modules/todolists/todolists.module'
     UsersModule,
     TodolistsModule,
     TasksModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],

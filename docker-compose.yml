@@ -20,7 +20,26 @@ services:
     networks:
       - todolist-network
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================
+  # Redis
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: todolist-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - todolist-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -46,16 +65,19 @@ services:
       JWT_ACCESS_EXPIRATION: 15m
       JWT_REFRESH_SECRET: super-secret-refresh-production-key-change-32-chars
       JWT_REFRESH_EXPIRATION: 7d
+      REDIS_URL: redis://redis:6379
     volumes:
       - api_uploads:/app/uploads
       - api_logs:/app/logs
     depends_on:
       mongodb:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       - todolist-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/api/v1/auth/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:5000/api/v1/auth/health" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -83,12 +105,15 @@ services:
       JWT_ACCESS_EXPIRATION: 15m
       JWT_REFRESH_SECRET: super-secret-refresh-dev-key-for-development-32-chars
       JWT_REFRESH_EXPIRATION: 7d
+      REDIS_URL: redis://redis:6379
     volumes:
       - .:/app
       - /app/node_modules
       - api_dev_uploads:/app/uploads
     depends_on:
       mongodb:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     networks:
       - todolist-network
@@ -134,15 +159,19 @@ volumes:
   mongodb_data:
     driver: local
     name: todolist_mongodb_data
+
+  redis_data:
+    driver: local
+    name: todolist_redis_data
   
   api_uploads:
     driver: local
     name: todolist_api_uploads
-    
+
   api_logs:
     driver: local
     name: todolist_api_logs
-    
+
   api_dev_uploads:
     driver: local
     name: todolist_api_dev_uploads
