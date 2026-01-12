@@ -67,7 +67,7 @@ export class AuthService {
         email: foundUser.email,
         sub: foundUser.id,
       })
-    const refreshTokenExpiration = (this.configService.get<string>(
+    const refreshTokenExpiration = (user.rememberMe ? '30d' : this.configService.get<string>(
       'JWT_REFRESH_EXPIRATION',
     ) || '7d') as ms.StringValue
     const expirationMs = ms(refreshTokenExpiration)
@@ -84,6 +84,7 @@ export class AuthService {
       email: foundUser.email,
       accessToken,
       refreshToken,
+      expiresAt,
     }
   }
 

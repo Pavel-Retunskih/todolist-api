@@ -98,11 +98,12 @@ export class AuthController {
     const user = await this.authService.login(userDto)
     if (!user)
       return response.status(403).json({ message: 'Invalid email or password' })
+
     response.cookie('refreshToken', user.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), //TODO: replace with env expiration time
+      expires: user.expiresAt,
       path: '/api/v1/auth',
     })
     return {

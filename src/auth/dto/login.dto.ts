@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginDTO {
@@ -12,4 +12,9 @@ export class LoginDTO {
   @IsString()
   @MinLength(6, { message: 'Password must be at least 6 characters long' })
   password: string;
+
+  @ApiProperty({ example: false, description: 'Remember me flag' })
+  @IsBoolean()
+  @IsOptional()
+  rememberMe?: boolean;
 }
