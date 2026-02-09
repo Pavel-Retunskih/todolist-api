@@ -46,9 +46,10 @@ export const createMockTasksRepository = (): jest.Mocked<TasksRepository> => ({
 export const createMockSessionRepository =
   (): jest.Mocked<SessionRepository> => ({
     createSession: jest.fn(),
-    getSessionByRefreshToken: jest.fn(),
+    getSession: jest.fn(),
     deleteByUserIdAndRefreshToken: jest.fn(),
     deleteAllByUserId: jest.fn(),
     deleteOthersByUserIdAndRefreshToken: jest.fn(),
     rotateRefreshToken: jest.fn(),
+    updateSession: jest.fn(),
   })
